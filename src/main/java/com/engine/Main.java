@@ -1,17 +1,23 @@
 package com.engine;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import com.engine.model.*;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
-
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+        User user = new User(1, "Zahar");
+        Project project = new Project(1, "project 1", "cool and rich project", user);
+        Tag tag1 = new Tag("tag 1");
+        Tag tag2 = new Tag("tag 2");
+        Comment comment = new Comment(1, user, "comment");
+        Task task = new Task(1, "title","do money", project, user, "in_process", "megahigh"  );
+        System.out.println(task);
+        System.out.println(task.hasTag(new Tag("java")));
+        task.markDone();
+        System.out.println(task.isDone());
     }
 }
