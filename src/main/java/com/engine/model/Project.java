@@ -3,10 +3,10 @@ package com.engine.model;
 import java.util.Objects;
 
 public class Project {
-    long id;
-    String title;
-    String description; // optional parameter
-    User user;
+    private final long id;
+    private final String title;
+    private String description = ""; // optional parameter
+    private final User user;
 
     public Project(long id, String title, User user) {
         this.id = id;

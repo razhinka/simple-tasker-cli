@@ -3,9 +3,9 @@ package com.engine.model;
 import java.util.Objects;
 
 public class Comment {
-    long id;
-    User author;
-    String text;
+    private final long id;
+    private final User author;
+    private final String text;
 
     public Comment(long id, User author, String text) {
         this.id = id;

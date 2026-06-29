@@ -10,8 +10,8 @@ public class Task {
     private final String description;
     private final Project project;
     private final User assignee;
-    private String status;      // TODO: Enum
-    private final String priority;    // TODO: Enum
+    private Status status;
+    private final Priority priority;
     private final HashSet<Tag> tags;
     private final LinkedList<Comment> comments;
 
@@ -23,8 +23,8 @@ public class Task {
         this.assignee = builder.assignee;
         this.status = builder.status;
         this.priority = builder.priority;
-        this.tags = builder.tags;
-        this.comments = builder.comments;
+        this.tags = new HashSet<>(builder.tags);
+        this.comments = new LinkedList<>(builder.comments);
     }
 
     public static class Builder {
@@ -35,8 +35,8 @@ public class Task {
         private User assignee;
         // optional parameters
         private String description = "";
-        private String status = "Not started";
-        private String priority = "low";
+        private Status status = Status.NOT_STARTED;
+        private Priority priority = Priority.LOW;
         private HashSet<Tag> tags = new HashSet<>();
         private LinkedList<Comment> comments = new LinkedList<>();
 
@@ -46,6 +46,7 @@ public class Task {
             this.project = Objects.requireNonNull(project, "project must not be null");
             this.assignee = Objects.requireNonNull(assignee, "assignee must not be null");
         }
+
         // Constructor for copying object
         public Builder(Task task) {
             this.id = task.id;
@@ -69,12 +70,12 @@ public class Task {
             return this;
         }
 
-        public Builder status(String status) {
+        public Builder status(Status status) {
             this.status = Objects.requireNonNull(status, "status must not be null");
             return this;
         }
 
-        public Builder priority(String priority) {
+        public Builder priority(Priority priority) {
             this.priority = Objects.requireNonNull(priority, "priority must not be null");
             return this;
         }
@@ -99,7 +100,7 @@ public class Task {
     }
 
     public HashSet<Tag> getTags() {
-        return tags;
+        return new HashSet<>(tags);
     }
 
     public Project getProject() {
@@ -111,14 +112,14 @@ public class Task {
     }
 
     public LinkedList<Comment> getComments() {
-        return comments;
+        return new LinkedList<>(comments);
     }
 
-    public String getPriority() {
+    public Priority getPriority() {
         return priority;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
@@ -158,11 +159,11 @@ public class Task {
     }
 
     public void markDone() {
-        status = "done";
+        status = Status.DONE;
     }
 
     public boolean isDone() {
-        return status.equalsIgnoreCase("done");
+        return status.equals(Status.DONE);
     }
 
     public boolean hasTag(Tag tag) {
@@ -171,5 +172,17 @@ public class Task {
 
     public String getSummary() {
         return title + " - " + description;
+    }
+
+    enum Status {
+        DONE,
+        IN_PROGRESS,
+        NOT_STARTED,
+    }
+
+    enum Priority {
+        LOW,
+        MEDIUM,
+        HIGH
     }
 }

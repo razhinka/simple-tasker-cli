@@ -3,8 +3,8 @@ package com.engine.model;
 import java.util.Objects;
 
 public class User {
-    long id;
-    String name;
+    private final long id;
+    private final String name;
 
     public User(int id, String name) {
         this.id = id;
