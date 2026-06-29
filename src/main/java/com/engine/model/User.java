@@ -1,7 +1,6 @@
 package com.engine.model;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Objects;
 
 public class User {
     long id;
@@ -9,7 +8,7 @@ public class User {
 
     public User(int id, String name) {
         this.id = id;
-        this.name = name;
+        this.name = Objects.requireNonNull(name, "name must not be null");
     }
 
     public String getName() {
@@ -22,7 +21,22 @@ public class User {
 
     @Override
     public boolean equals(Object obj) {
-        return id == ((User)obj).getId();
+        if (!(obj instanceof User)) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        User user = (User) obj;
+        return id == user.getId() &&  name.equals(user.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + Long.hashCode(id);
+        result = 31 * result + name.hashCode();
+        return result;
     }
 
     @Override

@@ -20,7 +20,7 @@ public class Tag {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Tag)) return false;
         Tag tag = (Tag) o;
         return Objects.equals(name, tag.name);
     }

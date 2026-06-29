@@ -1,18 +1,24 @@
 package com.engine.model;
 
-import java.util.ArrayList;
+import java.util.Objects;
 
 public class Project {
     long id;
     String title;
-    String description;
+    String description; // optional parameter
     User user;
 
-    public Project(long id, String title, String description, User user) {
+    public Project(long id, String title, User user) {
         this.id = id;
-        this.title = title;
-        this.description = description;
-        this.user = user;
+        this.title = Objects.requireNonNull(title, "title must not be null");
+        this.user = Objects.requireNonNull(user, "user must not be null");
+    }
+
+    public Project(long id, String title, User user,  String description) {
+        this.id = id;
+        this.title = Objects.requireNonNull(title, "title must not be null");
+        this.user = Objects.requireNonNull(user, "user must not be null");
+        this.description = Objects.requireNonNull(description, "description must not be null");
     }
 
     public long getId() {
@@ -34,6 +40,28 @@ public class Project {
     @Override
     public String toString() {
         return "Project{" + "id=" + id + ", title=" + title + ", description=" + description + ", user=" + user + '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Project)) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        Project project = (Project) obj;
+        return id == project.id && title.equals(project.title) && user.equals(project.user) && description.equals(project.description);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + Long.hashCode(id);
+        result = 31 * result + title.hashCode();
+        result = 31 * result + description.hashCode();
+        result = 31 * result + user.hashCode();
+        return result;
     }
 
     public boolean belongsToUser(User user) {
