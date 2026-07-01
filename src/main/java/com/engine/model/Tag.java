@@ -3,7 +3,7 @@ package com.engine.model;
 import java.util.Objects;
 
 public class Tag {
-    String name;
+    private final String name;
 
     public Tag(String name) {
         this.name = name;
