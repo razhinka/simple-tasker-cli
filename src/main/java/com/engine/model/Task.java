@@ -56,8 +56,8 @@ public class Task {
             this.assignee = task.assignee;
             this.status = task.status;
             this.priority = task.priority;
-            this.tags = task.tags;
-            this.comments = task.comments;
+            this.tags = new HashSet<>(task.tags);
+            this.comments = new LinkedList<>(task.comments);
         }
 
         public Builder description(String description) {

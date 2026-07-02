@@ -9,8 +9,10 @@ public class CommandLineTokenizer {
         boolean inQuotes = false;
         for (char c : line.toCharArray()) {
             if (Character.isWhitespace(c) && !inQuotes) {
-                tokens.add(token.toString());
-                token = new StringBuilder();
+                if (!token.isEmpty()) {
+                    tokens.add(token.toString());
+                    token = new StringBuilder();
+                }
                 continue;
             }
             if (c == '"' && !inQuotes) {
@@ -22,6 +24,9 @@ public class CommandLineTokenizer {
                 continue;
             }
             token.append(c);
+        }
+        if (!token.isEmpty()) {
+            tokens.add(token.toString());
         }
         return tokens.toArray(new String[0]);
     }

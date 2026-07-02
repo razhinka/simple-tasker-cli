@@ -1,5 +1,8 @@
 package com.engine;
 
+import com.engine.model.ParsedCommand;
+
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class CommandParser {
@@ -9,82 +12,118 @@ public class CommandParser {
         this.args = args;
     }
 
-    public void parse() {
+    public ParsedCommand parse() {
         if (args.length == 0) {
             System.out.println("Empty string");
-            return;
+            return null;
         }
         String command = args[0];
         switch (command) {
             case "add-task":
-                handleAddTask();
-                break;
+                 return handleAddTask();
             case "list-tasks":
-                handleListTasks();
-                break;
+                return handleListTasks();
             case "done":
-                handleDone();
-                break;
+                return handleDone();
             case "help":
-                //Write help file
+                return handleHelp();
             case "exit":
-                // Will call the command to terminate the job.
+                return handleExit(); // Will call the command to terminate the job.
             default:
-                System.out.printf("Unknown command %s\n", command);            
+                System.out.printf("Unknown command %s\n", command);
+                return null;
         }
     }
 
-    private void handleDone() {
+    private ParsedCommand handleExit() {
+        return new ParsedCommand("exit", new  HashMap<>());
     }
 
-    private void handleAddTask() {
+    private ParsedCommand handleHelp() {
+        return new ParsedCommand("help", new HashMap<>());
+    }
+
+    private ParsedCommand handleDone() {
+        if (args.length < 2) {
+            System.out.println("Not enough arguments");
+        }
+        HashMap<String, String> map = new HashMap<>();
+        map.put("title", args[1]);
+        return new ParsedCommand("done", map);
+    }
+
+    private ParsedCommand handleAddTask() {
         if (args.length < 6) {
             System.out.println("Not enough arguments");
-            return;
+            return null;
         }
-        String title = args[1];
-        String project = null, assignee = null; //required parameters
-        String priority;
+        HashMap<String, String> arguments = new HashMap<>();
+        arguments.put("title", args[1]);
         HashSet<String> tags = new HashSet<>();
         for (int i = 2; i < args.length - 1; i++) {
             String param = args[i];
             switch (param) {
                 case "--project":
-                    project = args[++i];
+                    arguments.put("project", args[++i]);
                     break;
                 case "--assignee":
-                    assignee = args[++i];
+                    arguments.put("assignee", args[++i]);
                     break;
                 case "--tag":
                     tags.add(args[++i]);
                     break;
                 case "--priority":
-                    priority = args[++i];
+                    arguments.put("priority", args[++i]);
+                    break;
+                case "--description":
+                    arguments.put("description", args[++i]);
+                    break;
+                default:
+                    System.out.println("Unknown argument: " + param);
+            }
+        }
+        if (!arguments.containsKey("project")) {
+            System.out.println("Missing project argument");
+            return null;
+        }
+        if (!arguments.containsKey("assignee")) {
+            System.out.println("Missing assignee argument");
+            return null;
+        }
+        arguments.put("tags", tags.toString());
+        return new ParsedCommand(args[0], arguments);
+    }
+
+    private ParsedCommand handleListTasks() {
+        if (args.length < 1) {
+            System.out.println("Empty string");
+            return null;
+        }
+        if (args.length == 1) {
+            return new ParsedCommand(args[0], new HashMap<>());
+        }
+        HashMap<String, String> arguments = new HashMap<>();
+        for (int i = 1; i <  args.length - 1; i++) {
+            String param = args[i];
+            switch (param) {
+                case "--project":
+                    arguments.put("project", args[++i]);
+                    break;
+                case "--assignee":
+                    arguments.put("assignee", args[++i]);
+                    break;
+                case "--priority":
+                    arguments.put("priority", args[++i]);
+                    break;
+                case "--tag":
+                    if (!arguments.containsKey("tags")) {
+                        arguments.put("tags", args[++i]);
+                    } else {
+                        arguments.put("tags", args[++i] + ";" + arguments.get("tags"));
+                    }
                     break;
             }
         }
-        if (project == null) {
-            System.out.println("Invalid command line arguments: required project");
-            return;
-        }
-        if (assignee == null) {
-            System.out.println("Invalid command line arguments: required assignee");
-            return;
-        }
-        // TODO: Handle further
-        System.out.printf("New task:\nTitle: %s\nProject: %s\nAssignee: %s\n", title, project, assignee);
-    }
-
-    private void handleListTasks() {
-        if (args.length < 1) {
-            System.out.println("Empty string");
-            return;
-        }
-        if (args.length == 1) {
-            System.out.println("smth like task list");
-            return;
-        }
-        // TODO: Add sort by parametrs after making a database
-
+        return new ParsedCommand(args[0], arguments);
     }
 }

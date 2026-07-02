@@ -10,7 +10,7 @@ public class Tag {
     }
 
     public String getName() {
-        return name;
+        return Objects.requireNonNull(name);
     }
 
     @Override

@@ -14,7 +14,7 @@ public class Project {
         this.user = Objects.requireNonNull(user, "user must not be null");
     }
 
-    public Project(long id, String title, User user,  String description) {
+    public Project(long id, String title, User user, String description) {
         this.id = id;
         this.title = Objects.requireNonNull(title, "title must not be null");
         this.user = Objects.requireNonNull(user, "user must not be null");
