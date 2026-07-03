@@ -1,9 +1,9 @@
-package com.engine;
+package com.engine.cli;
 
 import java.util.ArrayList;
 
 public class CommandLineTokenizer {
-    public static String[] tokenize(String line) {
+    public static String[] tokenize(String line) throws IllegalArgumentException {
         ArrayList<String> tokens = new ArrayList<String>();
         StringBuilder token = new StringBuilder();
         boolean inQuotes = false;
@@ -27,6 +27,9 @@ public class CommandLineTokenizer {
         }
         if (!token.isEmpty()) {
             tokens.add(token.toString());
+        }
+        if (inQuotes) {
+            throw new IllegalArgumentException("Invalid token: " + line + ". Quotation may not follow quotes");
         }
         return tokens.toArray(new String[0]);
     }
