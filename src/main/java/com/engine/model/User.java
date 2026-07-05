@@ -1,15 +1,6 @@
 package com.engine.model;
 
-import java.util.Objects;
-
-public class User {
-    private final long id;
-    private final String name;
-
-    public User(int id, String name) {
-        this.id = id;
-        this.name = Objects.requireNonNull(name, "name must not be null");
-    }
+public record User(long id, String name) {
 
     public String getName() {
         return name;

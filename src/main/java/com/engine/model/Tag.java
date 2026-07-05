@@ -2,14 +2,10 @@ package com.engine.model;
 
 import java.util.Objects;
 
-public class Tag {
-    private final String name;
+public record Tag(String name) {
 
-    public Tag(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
+    @Override
+    public String name() {
         return Objects.requireNonNull(name);
     }
 
@@ -25,8 +21,4 @@ public class Tag {
         return Objects.equals(name, tag.name);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(name);
-    }
 }

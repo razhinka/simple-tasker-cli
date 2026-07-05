@@ -13,7 +13,7 @@ public class Task {
     private final Set<Tag> tags;
     private final List<Comment> comments;
 
-    private static int cashedHashCode;
+    private int cachedHashCode;
 
     private Task(Builder builder) {
         this.id = builder.id;
@@ -93,7 +93,7 @@ public class Task {
         return id;
     }
 
-    public HashSet<Tag> getTags() {
+    public Set<Tag> getTags() {
         return new HashSet<>(tags);
     }
 
@@ -105,7 +105,7 @@ public class Task {
         return description;
     }
 
-    public LinkedList<Comment> getComments() {
+    public List<Comment> getComments() {
         return new LinkedList<>(comments);
     }
 
@@ -143,17 +143,17 @@ public class Task {
 
     @Override
     public int hashCode() {
-        if (cashedHashCode == 0) {
+        if (cachedHashCode == 0) {
             int result = 17;
             result = 31 * result + Long.hashCode(id);
             result = 31 * result + project.hashCode();
             result = 31 * result + assignee.hashCode();
             result = 31 * result + title.hashCode();
-            cashedHashCode = result;
+            cachedHashCode = result;
             return result;
         }
         else {
-            return cashedHashCode;
+            return cachedHashCode;
         }
     }
 

@@ -2,27 +2,11 @@ package com.engine.model;
 
 import java.util.Objects;
 
-public class Comment {
-    private final long id;
-    private final User author;
-    private final String text;
-
+public record Comment(long id, User author, String text) {
     public Comment(long id, User author, String text) {
         this.id = id;
         this.author = Objects.requireNonNull(author, "author must not be null");
         this.text = Objects.requireNonNull(text, "text must not be null");
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public User getAuthor() {
-        return author;
     }
 
     @Override
