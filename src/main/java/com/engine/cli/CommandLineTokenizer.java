@@ -1,10 +1,11 @@
 package com.engine.cli;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CommandLineTokenizer {
     public static String[] tokenize(String line) throws IllegalArgumentException {
-        ArrayList<String> tokens = new ArrayList<String>();
+        List<String> tokens = new ArrayList<>();
         StringBuilder token = new StringBuilder();
         boolean inQuotes = false;
         for (char c : line.toCharArray()) {

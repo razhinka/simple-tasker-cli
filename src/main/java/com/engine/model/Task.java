@@ -1,8 +1,6 @@
 package com.engine.model;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Objects;
+import java.util.*;
 
 public class Task {
     private final long id;
@@ -10,10 +8,12 @@ public class Task {
     private final String description;
     private final Project project;
     private final User assignee;
-    private Status status;
+    private final Status status;
     private final Priority priority;
-    private final HashSet<Tag> tags;
-    private final LinkedList<Comment> comments;
+    private final Set<Tag> tags;
+    private final List<Comment> comments;
+
+    private static int cashedHashCode;
 
     private Task(Builder builder) {
         this.id = builder.id;
@@ -32,13 +32,13 @@ public class Task {
         private final long id;
         private final String title;
         private final Project project;
-        private User assignee;
+        private final User assignee;
         // optional parameters
         private String description = "";
         private Status status = Status.NOT_STARTED;
         private Priority priority = Priority.LOW;
-        private HashSet<Tag> tags = new HashSet<>();
-        private LinkedList<Comment> comments = new LinkedList<>();
+        private Set<Tag> tags = new HashSet<>();
+        private List<Comment> comments = new LinkedList<>();
 
         public Builder(long id, String title, Project project, User assignee) {
             this.id = id;
@@ -46,7 +46,6 @@ public class Task {
             this.project = Objects.requireNonNull(project, "project must not be null");
             this.assignee = Objects.requireNonNull(assignee, "assignee must not be null");
         }
-
         // Constructor for copying object
         public Builder(Task task) {
             this.id = task.id;
@@ -65,11 +64,6 @@ public class Task {
             return this;
         }
 
-        public Builder assignee(User assignee) {
-            this.assignee = Objects.requireNonNull(assignee, "assignee must not be null");
-            return this;
-        }
-
         public Builder status(Status status) {
             this.status = Objects.requireNonNull(status, "status must not be null");
             return this;
@@ -80,13 +74,13 @@ public class Task {
             return this;
         }
 
-        public Builder tags(HashSet<Tag> tags) {
-            this.tags = Objects.requireNonNull(tags, "tags must not be null");
+        public Builder tags(Set<Tag> tags) {
+            this.tags = Set.copyOf(tags);
             return this;
         }
 
-        public Builder comments(LinkedList<Comment> comments) {
-            this.comments = comments;
+        public Builder comments(List<Comment> comments) {
+            this.comments = List.copyOf(comments);
             return this;
         }
 
@@ -138,28 +132,33 @@ public class Task {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Task)) {
+        if (!(o instanceof Task other)) {
             return false;
         }
         if (o == this) {
             return true;
         }
-        Task other = (Task) o;
         return this.id == other.id && this.project.equals(other.project) && this.assignee.equals(other.assignee) && this.title.equals(other.title);
     }
 
     @Override
     public int hashCode() {
-        int result = 17;
-        result = 31 * result + Long.hashCode(id);
-        result = 31 * result + project.hashCode();
-        result = 31 * result + assignee.hashCode();
-        result = 31 * result + title.hashCode();
-        return result;
+        if (cashedHashCode == 0) {
+            int result = 17;
+            result = 31 * result + Long.hashCode(id);
+            result = 31 * result + project.hashCode();
+            result = 31 * result + assignee.hashCode();
+            result = 31 * result + title.hashCode();
+            cashedHashCode = result;
+            return result;
+        }
+        else {
+            return cashedHashCode;
+        }
     }
 
-    public void markDone() {
-        status = Status.DONE;
+    public Task markDone() {
+        return new Builder(this).status(Status.DONE).build();
     }
 
     public boolean isDone() {
@@ -172,17 +171,5 @@ public class Task {
 
     public String getSummary() {
         return title + " - " + description;
-    }
-
-    enum Status {
-        DONE,
-        IN_PROGRESS,
-        NOT_STARTED,
-    }
-
-    enum Priority {
-        LOW,
-        MEDIUM,
-        HIGH
     }
 }
