@@ -17,6 +17,6 @@ public class CommandHandler {
         if (command == null) {
             throw new IllegalArgumentException("Unknown command: " + parsedCommand.name());
         }
-        command.execute(parsedCommand.arguments());
+        command.execute(parsedCommand.args());
     }
 }
