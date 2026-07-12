@@ -3,8 +3,6 @@ package com.engine.services;
 import com.engine.commands.Command;
 import com.engine.commands.ParsedCommand;
 
-import java.io.IOException;
-
 public class CommandHandler {
     private final CommandRegistry registry;
 

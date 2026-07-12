@@ -1,15 +1,20 @@
 package com.engine.commands;
 
 import com.engine.model.*;
-import com.engine.services.InMemoryTaskRepository;
+import com.engine.services.Repository;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class AddTaskCommand implements Command {
-    private final InMemoryTaskRepository repository;
+    private final Repository<Task> repository;
+    private static final DateTimeFormatter DEADLINE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
-    public AddTaskCommand(InMemoryTaskRepository repository) {
+    public AddTaskCommand(Repository<Task> repository) {
         this.repository = repository;
     }
 
@@ -25,7 +30,7 @@ public class AddTaskCommand implements Command {
         User assignee = null;
         Priority priority = Priority.LOW;
         Status status = Status.NOT_STARTED;
-
+        Optional<LocalDateTime> deadline = Optional.empty();
 
         for (int i = 1; i < args.length - 1; i++) {
             String param = args[i];
@@ -40,13 +45,21 @@ public class AddTaskCommand implements Command {
                     tags.add(new Tag(args[++i]));
                     break;
                 case "--priority":
-                    priority = Priority.valueOf(args[++i]);
+                    priority = Priority.valueOf(args[++i].toUpperCase());
                     break;
                 case "--description":
                     description = args[++i];
                     break;
-                case "--status": //TODO: ENUMS!!!
-                    status = Status.valueOf(args[++i]);
+                case "--status":
+                    status = Status.valueOf(args[++i].toUpperCase());
+                    break;
+                case "--deadline":
+
+                    try {
+                        deadline = Optional.of(LocalDateTime.parse(args[++i], DEADLINE_FORMATTER));
+                    } catch (DateTimeParseException e) {
+                        throw new IllegalArgumentException("Invalid date format. Correct format: dd.MM.yyyy HH:mm");
+                    }
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown argument: " + param);
@@ -59,13 +72,13 @@ public class AddTaskCommand implements Command {
             throw new IllegalArgumentException("Missing assignee argument");
         }
 
-        Task task = new Task.Builder(0, title, project, assignee)
+        Task.Builder task = new Task.Builder(0, title, project, assignee)
                 .tags(tags)
                 .description(description)
                 .priority(priority)
-                .status(status)
-                .build();
-        repository.addTask(task);
+                .status(status);
+        deadline.ifPresent(task::deadline);
+        repository.save(task.build());
     }
 
     @Override

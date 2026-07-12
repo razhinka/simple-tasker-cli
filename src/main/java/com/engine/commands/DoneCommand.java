@@ -1,11 +1,15 @@
 package com.engine.commands;
 
-import com.engine.services.InMemoryTaskRepository;
+import com.engine.model.Status;
+import com.engine.model.Task;
+import com.engine.services.Repository;
+
+import java.util.Optional;
 
 public class DoneCommand implements Command {
-    private final InMemoryTaskRepository repository;
+    private final Repository<Task> repository;
 
-    public DoneCommand(InMemoryTaskRepository repository) {
+    public DoneCommand(Repository<Task> repository) {
         this.repository = repository;
     }
 
@@ -23,13 +27,20 @@ public class DoneCommand implements Command {
             throw new IllegalArgumentException("Too many arguments");
         }
         String title  = args[0];
-        // Сейчас мы вызываем метод у репозитория и он возвращает boolean. Может сделать его void и оборачивать его вызов в try?
-        boolean done = repository.markTaskDone(title);
-        if (done) {
-            System.out.println("Task has been done");
+        Optional<Task> getTask = repository.findById(title);
+        if (getTask.isPresent()) {
+            Task task = getTask.get();
+            if (task.isDone()) {
+                System.out.printf("Task %s is already done%n", title);
+            }
+            else {
+                task = new Task.Builder(task).status(Status.DONE).build();
+                repository.save(task);
+                System.out.println("Task " + title + " is done");
+            }
         }
         else {
-            System.out.println("Task is not exist");
+            System.out.printf("Task %s not found%n", title);
         }
     }
 }

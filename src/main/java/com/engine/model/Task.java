@@ -1,5 +1,6 @@
 package com.engine.model;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class Task {
@@ -12,6 +13,7 @@ public class Task {
     private final Priority priority;
     private final Set<Tag> tags;
     private final List<Comment> comments;
+    private final LocalDateTime deadline;
 
     private int cachedHashCode;
 
@@ -25,6 +27,7 @@ public class Task {
         this.priority = builder.priority;
         this.tags = new HashSet<>(builder.tags);
         this.comments = new LinkedList<>(builder.comments);
+        this.deadline = builder.deadline;
     }
 
     public static class Builder {
@@ -39,6 +42,7 @@ public class Task {
         private Priority priority = Priority.LOW;
         private Set<Tag> tags = new HashSet<>();
         private List<Comment> comments = new LinkedList<>();
+        private LocalDateTime deadline;
 
         public Builder(long id, String title, Project project, User assignee) {
             this.id = id;
@@ -84,6 +88,11 @@ public class Task {
             return this;
         }
 
+        public Builder deadline(LocalDateTime deadline) {
+            this.deadline = deadline;
+            return this;
+        }
+
         public Task build() {
             return new Task(this);
         }
@@ -125,9 +134,14 @@ public class Task {
         return assignee;
     }
 
+    public Optional<LocalDateTime> getDeadline() {
+        return Optional.ofNullable(deadline);
+    }
+
     @Override
     public String toString() {
-        return "Task{id=" + id + ", title=" + title + ", project=" + project + ", assignee=" + assignee + "}";
+        return "Task \"" + title + "\"\nAssignee: " + assignee.name() + "\nProject: " + project.title() + "\nDescription: " + description
+                + "\nStatus: " + status +  "\nPriority: " + priority + "\nTags: " + tags + "\nDeadline: " + deadline + "\n\n";
     }
 
     @Override

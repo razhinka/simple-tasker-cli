@@ -1,15 +1,6 @@
 package com.engine.model;
 
 public record User(long id, String name) {
-
-    public String getName() {
-        return name;
-    }
-
-    public long getId() {
-        return id;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof User)) {
@@ -19,7 +10,7 @@ public record User(long id, String name) {
             return true;
         }
         User user = (User) obj;
-        return id == user.getId() && name.equals(user.getName());
+        return id == user.id && name.equals(user.name);
     }
 
     @Override

@@ -2,41 +2,41 @@ package com.engine.services;
 
 import com.engine.model.Task;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class InMemoryTaskRepository {
-    private static final InMemoryTaskRepository INSTANCE = new InMemoryTaskRepository();
-    private static final List<Task> tasks = new ArrayList<>();
+public class InMemoryTaskRepository implements Repository<Task> {
+    private static final Map<String, Task> tasks = new HashMap<>();
 
-    private InMemoryTaskRepository() {}
-
-    public static InMemoryTaskRepository getInstance() {
-        return INSTANCE;
+    @Override
+    public void save(Task o) {
+        tasks.put(o.getTitle(), o);
     }
 
-    public List<Task> getTasks() {
-        return tasks;
+    @Override
+    public void delete(Task o) {
+        tasks.remove(o.getTitle());
     }
 
-    public void addTask(Task task) {
-        tasks.add(task);
+    @Override
+    public List<Task> findAll() {
+        return List.of(tasks.values().toArray(new Task[0]));
     }
 
-    /**
-     * Помечает задачу как выполненную по её идентификатору (или title).
-     * @param title название задачи (или id)
-     * @return true, если задача найдена и обновлена, false — если не найдена
-     */
-    public boolean markTaskDone(String title) { //QUESTION: Этот метод public, значит в теории он может быть вызван кем угодно. Нужно переработать архитектуру для безопасности?
-        for (Task task : tasks) {
-            if (task.getTitle().equals(title)) {
-                Task newTask = task.markDone();
-                tasks.remove(task);
-                tasks.add(newTask);
-                return true;
-            }
+    @Override
+    public Optional<Task> findById(String id) {
+        if (tasks.containsKey(id)) {
+            return Optional.of(tasks.get(id));
         }
-        return false;
+        return Optional.empty();
+    }
+
+    @Override
+    public void deleteById(String id) {
+        tasks.remove(id);
+    }
+
+    @Override
+    public long count() {
+        return tasks.size();
     }
 }
