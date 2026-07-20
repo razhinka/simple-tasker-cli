@@ -1,15 +1,14 @@
 package com.engine.commands;
 
-import com.engine.model.Status;
 import com.engine.model.Task;
-import com.engine.services.Repository;
+import com.engine.services.TaskRepository;
 
 import java.util.Optional;
 
 public class DoneCommand implements Command {
-    private final Repository<Task> repository;
+    private final TaskRepository repository;
 
-    public DoneCommand(Repository<Task> repository) {
+    public DoneCommand(TaskRepository repository) {
         this.repository = repository;
     }
 
@@ -27,20 +26,13 @@ public class DoneCommand implements Command {
             throw new IllegalArgumentException("Too many arguments");
         }
         String title  = args[0];
-        Optional<Task> getTask = repository.findById(title);
+        Optional<Task> getTask = repository.findByTitle(title);
         if (getTask.isPresent()) {
-            Task task = getTask.get();
-            if (task.isDone()) {
-                System.out.printf("Task %s is already done%n", title);
-            }
-            else {
-                task = new Task.Builder(task).status(Status.DONE).build();
-                repository.save(task);
-                System.out.println("Task " + title + " is done");
-            }
+            repository.markDone(getTask.get());
+            System.out.println("Task  " + title + " marked done.");
         }
         else {
-            System.out.printf("Task %s not found%n", title);
+            System.out.println("Task with title \"" + title + "\" not found");
         }
     }
 }
