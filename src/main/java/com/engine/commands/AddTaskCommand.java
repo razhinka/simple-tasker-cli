@@ -1,7 +1,7 @@
 package com.engine.commands;
 
 import com.engine.model.*;
-import com.engine.services.Repository;
+import com.engine.services.TaskRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -11,10 +11,10 @@ import java.util.Optional;
 import java.util.Set;
 
 public class AddTaskCommand implements Command {
-    private final Repository<Task> repository;
+    private final TaskRepository repository;
     private static final DateTimeFormatter DEADLINE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
-    public AddTaskCommand(Repository<Task> repository) {
+    public AddTaskCommand(TaskRepository repository) {
         this.repository = repository;
     }
 
@@ -54,7 +54,6 @@ public class AddTaskCommand implements Command {
                     status = Status.valueOf(args[++i].toUpperCase());
                     break;
                 case "--deadline":
-
                     try {
                         deadline = Optional.of(LocalDateTime.parse(args[++i], DEADLINE_FORMATTER));
                     } catch (DateTimeParseException e) {

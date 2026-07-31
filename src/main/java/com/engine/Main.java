@@ -17,6 +17,7 @@ public class Main {
         mapper.registerModule(new JavaTimeModule());
         mapper.registerModule(new Jdk8Module()); // добавляем поддержку Optional
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
 
         CommandParser parser = new CommandParser();
 
@@ -30,6 +31,9 @@ public class Main {
         registry.register(new ExitCommand());
         registry.register(new DoneCommand(repository));
         registry.register(new HelpCommand());
+        registry.register(new StatsCommand(repository));
+        registry.register(new EditTaskCommand(repository));
+        registry.register(new DeleteTaskCommand(repository));
 
         try (Scanner input = new Scanner(System.in)) {
             while (input.hasNextLine()) {

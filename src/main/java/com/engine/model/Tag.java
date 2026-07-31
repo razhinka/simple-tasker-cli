@@ -11,7 +11,7 @@ public record Tag(String name) {
 
     @Override
     public String toString() {
-        return "Tag{tag=" + name + '}';
+        return "<" + name + ">";
     }
 
     @Override

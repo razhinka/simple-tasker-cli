@@ -179,7 +179,7 @@ public class Task {
     @Override
     public String toString() {
         return "Task " + id + " \"" + title + "\"\nAssignee: " + assignee.name() + "\nProject: " + project.title() + "\nDescription: " + description
-                + "\nStatus: " + status + "\nPriority: " + priority + "\nTags: " + tags + "\nDeadline: " + deadline + "\n\n";
+                + "\nStatus: " + status + "\nPriority: " + priority + "\nTags: " + tags + "\nDeadline: " + deadline + "\n";
     }
 
     @Override

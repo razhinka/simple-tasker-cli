@@ -2,7 +2,7 @@ package com.engine.model;
 
 import java.util.Objects;
 
-public record Project(long id, String title) {
+public record Project(long id, String title) implements Comparable<Project> {
 
     public Project(long id, String title) {
         this.id = id;
@@ -11,7 +11,7 @@ public record Project(long id, String title) {
 
     @Override
     public String toString() {
-        return "Project{" + "id=" + id + ", title=" + title + '}';
+        return "Project(" + title + ")";
     }
 
     @Override
@@ -32,5 +32,10 @@ public record Project(long id, String title) {
         result = 31 * result + Long.hashCode(id);
         result = 31 * result + title.hashCode();
         return result;
+    }
+
+    @Override
+    public int compareTo(Project o) {
+        return o.toString().compareTo(this.toString());
     }
 }

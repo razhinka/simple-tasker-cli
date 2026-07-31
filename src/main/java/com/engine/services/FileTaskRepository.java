@@ -65,10 +65,7 @@ public final class FileTaskRepository implements TaskRepository {
 
     @Override
     public Optional<Task> findById(long id) {
-        if (storage.containsKey(id)) {
-            return Optional.ofNullable(storage.get(id));
-        }
-        return Optional.empty();
+        return Optional.ofNullable(storage.get(id));
     }
 
     @Override
@@ -86,16 +83,27 @@ public final class FileTaskRepository implements TaskRepository {
         try {
             List<Task> tasks = mapper.readValue(
                     file,
-                    new TypeReference<>() {}
+                    new TypeReference<>() {
+                    }
             );
+            long maxId = 0;
             for (Task task : tasks) {
-                storage.put(task.getId(),task);
+                storage.put(task.getId(), task);
+                if (task.getId() > maxId) {
+                    maxId = task.getId();
+                }
             }
+            idGenerator.set(maxId + 1);
         } catch (IOException e) {
-            System.err.println("Error loading tasks from file: " + e.getMessage());
+            // Если файл не существует или повреждён, начинаем с пустого хранилища
+            // При этом idGenerator остаётся 0 (первый id будет 0)
+            if (!file.exists()) {
+                // Файл не существует — это нормально, ничего не делаем
+            } else {
+                System.err.println("Error loading tasks from file: " + e.getMessage());
+            }
         }
     }
-
     private void saveToFile() {
         try {
             List<Task> tasks = new ArrayList<>(storage.values());
