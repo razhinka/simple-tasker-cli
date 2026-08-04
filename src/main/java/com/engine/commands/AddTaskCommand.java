@@ -1,5 +1,6 @@
 package com.engine.commands;
 
+import com.engine.exceptions.InvalidCommandException;
 import com.engine.model.*;
 import com.engine.services.TaskRepository;
 
@@ -21,7 +22,7 @@ public class AddTaskCommand implements Command {
     @Override
     public void execute(String[] args) {
         if (args.length < 5) {
-            throw new IllegalArgumentException("Not enough arguments");
+            throw new InvalidCommandException("Not enough arguments");
         }
         String title = args[0];
         String description = "";
@@ -57,18 +58,18 @@ public class AddTaskCommand implements Command {
                     try {
                         deadline = Optional.of(LocalDateTime.parse(args[++i], DEADLINE_FORMATTER));
                     } catch (DateTimeParseException e) {
-                        throw new IllegalArgumentException("Invalid date format. Correct format: dd.MM.yyyy HH:mm");
+                        throw new InvalidCommandException("Invalid date format. Correct format: dd.MM.yyyy HH:mm");
                     }
                     break;
                 default:
-                    throw new IllegalArgumentException("Unknown argument: " + param);
+                    throw new InvalidCommandException("Unknown argument: " + param);
             }
         }
         if (project == null) {
-            throw new IllegalArgumentException("Missing project argument");
+            throw new InvalidCommandException("Missing project argument");
         }
         if (assignee == null) {
-            throw new IllegalArgumentException("Missing assignee argument");
+            throw new InvalidCommandException("Missing assignee argument");
         }
 
         Task.Builder task = new Task.Builder(0, title, project, assignee)

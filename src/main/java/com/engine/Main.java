@@ -8,11 +8,12 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.File;
-import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.registerModule(new Jdk8Module()); // добавляем поддержку Optional
@@ -25,12 +26,14 @@ public class Main {
         TaskRepository repository = new FileTaskRepository(repositoryFile, mapper);
         CommandRegistry registry = new CommandRegistry();
         CommandHandler handler = new CommandHandler(registry);
+
+        Path helpFilePath = Paths.get("resources/help.txt");
         //adding commands to registry
         registry.register(new AddTaskCommand(repository));
         registry.register(new ListTasksCommand(repository));
         registry.register(new ExitCommand());
         registry.register(new DoneCommand(repository));
-        registry.register(new HelpCommand());
+        registry.register(new HelpCommand(helpFilePath));
         registry.register(new StatsCommand(repository));
         registry.register(new EditTaskCommand(repository));
         registry.register(new DeleteTaskCommand(repository));

@@ -98,12 +98,13 @@ public final class FileTaskRepository implements TaskRepository {
             // Если файл не существует или повреждён, начинаем с пустого хранилища
             // При этом idGenerator остаётся 0 (первый id будет 0)
             if (!file.exists()) {
-                // Файл не существует — это нормально, ничего не делаем
+                idGenerator.set(1);
             } else {
                 System.err.println("Error loading tasks from file: " + e.getMessage());
             }
         }
     }
+
     private void saveToFile() {
         try {
             List<Task> tasks = new ArrayList<>(storage.values());

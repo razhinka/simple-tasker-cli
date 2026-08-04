@@ -1,5 +1,6 @@
 package com.engine.commands;
 
+import com.engine.exceptions.InvalidCommandException;
 import com.engine.model.Priority;
 import com.engine.model.Status;
 import com.engine.model.Tag;
@@ -48,7 +49,7 @@ public class ListTasksCommand implements Command {
                     break;
                 case "--tag":
                     Tag tag = new Tag(args[++i]);
-                    predicates.add(task -> task.getTags().contains(tag));
+                    predicates.add(task -> task.hasTag(tag));
                     break;
                 case "--sort":
                     sortBy = args[++i];
@@ -57,7 +58,7 @@ public class ListTasksCommand implements Command {
                     order = args[++i];
                     break;
                 default:
-                    throw new IllegalArgumentException("Unknown command: " + args[i]);
+                    throw new InvalidCommandException("Unknown command: " + args[i]);
             }
         }
 
@@ -88,7 +89,7 @@ public class ListTasksCommand implements Command {
         };
 
         if (!(Objects.equals(order, "asc") || Objects.equals(order, "desc"))) {
-            throw new IllegalArgumentException("Invalid order: " + order + ". Supported orders: asc, desc");
+            throw new InvalidCommandException("Invalid order: " + order + ". Supported orders: asc, desc");
         }
         if (order.equals("desc")) {
             comparator = comparator.reversed();

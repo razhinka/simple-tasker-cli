@@ -21,8 +21,6 @@ public class Task {
     private final List<Comment> comments;
     private final LocalDateTime deadline;
 
-    private int cachedHashCode;
-
     private Task(Builder builder) {
         this.id = builder.id;
         this.title = builder.title;
@@ -190,22 +188,14 @@ public class Task {
         if (o == this) {
             return true;
         }
-        return this.id == other.id && this.project.equals(other.project) && this.assignee.equals(other.assignee) && this.title.equals(other.title);
+        return this.id == other.id;
     }
 
     @Override
     public int hashCode() {
-        if (cachedHashCode == 0) {
-            int result = 17;
-            result = 31 * result + Long.hashCode(id);
-            result = 31 * result + project.hashCode();
-            result = 31 * result + assignee.hashCode();
-            result = 31 * result + title.hashCode();
-            cachedHashCode = result;
-            return result;
-        } else {
-            return cachedHashCode;
-        }
+        int result = 17;
+        result = 31 * result + Long.hashCode(id);
+        return result;
     }
 
     public Task markDone() {

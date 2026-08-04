@@ -1,5 +1,6 @@
 package com.engine.commands;
 
+import com.engine.exceptions.TaskNotFoundException;
 import com.engine.model.*;
 import com.engine.services.TaskRepository;
 
@@ -26,7 +27,7 @@ public class EditTaskCommand implements Command {
         long id = Long.parseLong(args[0]);
         Task task = repository.findById(id).orElse(null);
         if (task == null) {
-            throw new RuntimeException("Task with id " + id + " not found");
+            throw new TaskNotFoundException("Task with id " + id + " not found");
         }
         Task.Builder newTask = new Task.Builder(task);
         for (int i = 0; i < args.length; i++) {
@@ -39,6 +40,7 @@ public class EditTaskCommand implements Command {
                     break;
                 case "--assignee":
                     newTask.assignee(new User(0, args[++i]));
+                    break;
                 case "--description":
                     newTask.description(args[++i]);
                     break;
@@ -47,15 +49,17 @@ public class EditTaskCommand implements Command {
                     break;
                 case "--status":
                     newTask.status(Status.valueOf(args[++i].toUpperCase()));
+                    break;
                 case "--deadline":
                     try {
-                        newTask.deadline(Optional.of(LocalDateTime.parse(args[++i], DEADLINE_FORMATTER)).get());
+                        newTask.deadline(LocalDateTime.parse(args[++i], DEADLINE_FORMATTER));
                     } catch (DateTimeParseException e) {
                         throw new IllegalArgumentException("Invalid date format. Correct format: dd.MM.yyyy HH:mm");
                     }
                     break;
                 case "--tag":
                     System.out.println("Sorry, but im really lazy to implement this case");
+                    break;
             }
         }
         repository.delete(task);

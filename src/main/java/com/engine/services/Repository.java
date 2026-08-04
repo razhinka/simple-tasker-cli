@@ -5,9 +5,14 @@ import java.util.Optional;
 
 public interface Repository<T> {
     void save(T o);
+
     void delete(T o);
+
     List<T> findAll();
+
     Optional<T> findById(long id);
+
     void deleteById(long id);
+
     long count();
 }
