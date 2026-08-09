@@ -12,6 +12,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
+class Test {
+    public static void main(String[] args) {}
+}
+
 public class Main {
     public static void main(String[] args) {
         ObjectMapper mapper = new ObjectMapper();
@@ -39,10 +43,14 @@ public class Main {
         registry.register(new DeleteTaskCommand(repository));
 
         try (Scanner input = new Scanner(System.in)) {
-            while (input.hasNextLine()) {
+            boolean running = true;
+            while (running && input.hasNextLine()) {
                 try {
                     String inputLine = input.nextLine();
                     ParsedCommand command = parser.parse(inputLine);
+                    if (command.name().equals("exit")) {
+                        running = false;
+                    }
                     handler.handle(command);
                 } catch (Exception e) {
                     System.out.println("Error: " + e.getMessage() + "\n");

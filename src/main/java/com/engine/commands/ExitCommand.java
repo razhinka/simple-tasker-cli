@@ -9,6 +9,6 @@ public class ExitCommand implements Command {
 
     @Override
     public void execute(String[] args) {
-        System.exit(0);
+        System.out.println("Goodbye!");
     }
 }

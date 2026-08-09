@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -108,5 +110,32 @@ class FileTaskRepositoryTest {
         assertTrue(repo.findAll().isEmpty());
         repo.save(new Task.Builder(0, "first", new Project(1, "p"), new User(1, "u")).build());
         assertTrue(missingFile.exists());
+    }
+
+    @Test
+    @DisplayName("Should handle empty file without throwing exception")
+    void shouldHandleEmptyFileWithoutException() {
+        //Given
+        File emptyFile = tempDir.resolve("empty.json").toFile();
+        try {
+            emptyFile.createNewFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        FileTaskRepository repo = new FileTaskRepository(emptyFile, mapper);
+        assertTrue(repo.findAll().isEmpty());
+    }
+
+    @Test
+    @DisplayName("Should handle malformed JSON without crashing")
+    void shouldHandleMalformedJson() throws IOException {
+        File malformedFile = tempDir.resolve("malformed.json").toFile();
+        Files.writeString(malformedFile.toPath(), "{ this is not json }");
+
+        FileTaskRepository repo = new FileTaskRepository(malformedFile, mapper);
+        assertTrue(repo.findAll().isEmpty(), "Repository should be empty if file is malformed");
+        repo.save(new Task.Builder(0, "first", new Project(1, "p"), new User(1, "u")).build());
+        assertTrue(malformedFile.exists());
+        assertFalse(repo.findAll().isEmpty());
     }
 }

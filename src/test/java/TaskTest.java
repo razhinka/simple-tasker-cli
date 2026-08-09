@@ -37,7 +37,7 @@ public class TaskTest {
     @DisplayName("Has tag should return true")
     void hasTagReturnsTrue() {
         Tag tag = new Tag("test");
-        Set<Tag> testTags = new HashSet<Tag>();
+        Set<Tag> testTags = new HashSet<>();
         testTags.add(tag);
         Task testTask = new Task.Builder(0, "mock test", mockProject, mockUser)
                 .tags(testTags).build();

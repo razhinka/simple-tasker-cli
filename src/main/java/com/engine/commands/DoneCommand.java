@@ -25,14 +25,14 @@ public class DoneCommand implements Command {
         if (args.length > 1) {
             throw new IllegalArgumentException("Too many arguments");
         }
-        String title  = args[0];
-        Optional<Task> getTask = repository.findByTitle(title);
+        long id  = Long.getLong(args[0]);
+        Optional<Task> getTask = repository.findById(id);
         if (getTask.isPresent()) {
             repository.markDone(getTask.get());
-            System.out.println("Task  " + title + " marked done.");
+            System.out.println("Task  " + id + " marked done.");
         }
         else {
-            System.out.println("Task with title \"" + title + "\" not found");
+            System.out.println("Task with title \"" + id + "\" not found");
         }
     }
 }

@@ -80,20 +80,23 @@ public final class FileTaskRepository implements TaskRepository {
     }
 
     private void loadFromFile() {
+        if (file.exists() && file.length() == 0) {
+            return;
+        }
         try {
             List<Task> tasks = mapper.readValue(
                     file,
                     new TypeReference<>() {
                     }
             );
-            long maxId = 0;
+            long maxId = 1;
             for (Task task : tasks) {
                 storage.put(task.getId(), task);
                 if (task.getId() > maxId) {
                     maxId = task.getId();
                 }
             }
-            idGenerator.set(maxId + 1);
+                idGenerator.set(maxId + 1);
         } catch (IOException e) {
             // Если файл не существует или повреждён, начинаем с пустого хранилища
             // При этом idGenerator остаётся 0 (первый id будет 0)

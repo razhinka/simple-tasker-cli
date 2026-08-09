@@ -24,6 +24,9 @@ public class AddTaskCommand implements Command {
         if (args.length < 5) {
             throw new InvalidCommandException("Not enough arguments");
         }
+        if (args[0].isBlank()) {
+            throw new InvalidCommandException("Invalid task name");
+        }
         String title = args[0];
         String description = "";
         Set<Tag> tags = new HashSet<>();
@@ -37,10 +40,18 @@ public class AddTaskCommand implements Command {
             String param = args[i];
             switch (param) {
                 case "--project":
-                    project = new Project(0, args[++i]);
+                    String projectName = args[++i];
+                    if (projectName.isBlank()) {
+                        throw new InvalidCommandException("Invalid project name");
+                    }
+                    project = new Project(0, projectName);
                     break;
                 case "--assignee":
-                    assignee = new User(0, args[++i]);
+                    String assigneeName = args[++i];
+                    if (assigneeName.isBlank()) {
+                        throw new InvalidCommandException("Invalid assignee name");
+                    }
+                    assignee = new User(0, assigneeName);
                     break;
                 case "--tag":
                     tags.add(new Tag(args[++i]));

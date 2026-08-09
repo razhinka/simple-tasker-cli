@@ -1,9 +1,9 @@
 Available commands:
-  add-task <title> --project <name> --assignee <name> [--priority HIGH|MEDIUM|LOW] [--status DONE|IN_PROGRESS|NOT_STARTED] [--deadline dd.MM.yyyy HH:mm] [--tag <tag>]...
+  add-task <title> --project <name> --assignee <name> [--priority HIGH|MEDIUM|LOW] [--status DONE|IN_PROGRESS|NOT_STARTED] [--deadline yyyy-MM-ddTHH:mm] [--tag <tag>]...
   list-tasks [--status <STATUS>] [--priority <PRIORITY>] [--tag <TAG>] [--overdue] [--sort id|title|project|priority] [--order asc|desc]
-  edit <id> --title <new title> [--description <text>] [--priority HIGH|MEDIUM|LOW] [--status DONE|IN_PROGRESS|NOT_STARTED] [--deadline dd.MM.yyyy HH:mm] [--tag <tag>]...
-  delete <id> | delete --title <title>
-  done <title>
+  edit <id> --title <new title> [--description <text>] [--priority HIGH|MEDIUM|LOW] [--status DONE|IN_PROGRESS|NOT_STARTED] [--deadline yyyy-MM-ddTHH:mm] [--tag <tag>]...
+  delete <id>
+  done <id>
   stats
   help
   exit
