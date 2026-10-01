@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/sql/000_drop_all.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/sql/001_schema.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/sql/002_select_where.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/sql/003_joins.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/sql/004_aggregates.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/sql/006_analyze.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/sql/009_test_data.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/engine/services/SQLTaskRepository.java" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/db/migration/V1__initial_schema.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/db/migration/V2__add_indexes.sql" dialect="PostgreSQL" />
+    <file url="PROJECT" dialect="PostgreSQL" />
+  </component>
+</project>

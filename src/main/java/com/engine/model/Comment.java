@@ -1,12 +1,15 @@
 package com.engine.model;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
-public record Comment(long id, User author, String text) {
-    public Comment(long id, User author, String text) {
+public record Comment(long id, User author, String text, LocalDateTime created) {
+
+    public Comment(long id, User author, String text,  LocalDateTime created) {
         this.id = id;
         this.author = Objects.requireNonNull(author, "author must not be null");
         this.text = Objects.requireNonNull(text, "text must not be null");
+        this.created = Objects.requireNonNull(created, "created must not be null");
     }
 
     @Override
@@ -16,14 +19,13 @@ public record Comment(long id, User author, String text) {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Comment)) {
+        if (!(o instanceof Comment(long id1, User author1, String text1, LocalDateTime created1))) {
             return false;
         }
         if (this == o) {
             return true;
         }
-        Comment comment = (Comment) o;
-        return this.id == comment.id && author.equals(comment.author) && text.equals(comment.text);
+        return this.id == id1 && author.equals(author1) && text.equals(text1) && created.equals(created1);
     }
 
     @Override
