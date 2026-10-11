@@ -1,6 +1,6 @@
-package com.engine.services;
+package com.engine.cli;
 
-import com.engine.commands.ParsedCommand;
+import com.engine.cli.commands.ParsedCommand;
 
 import java.util.ArrayList;
 import java.util.Arrays;

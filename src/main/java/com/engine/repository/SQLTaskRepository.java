@@ -1,4 +1,4 @@
-package com.engine.services;
+package com.engine.repository;
 
 import com.engine.model.*;
 
@@ -312,8 +312,8 @@ public class SQLTaskRepository implements TaskRepository {
                 " JOIN tags ON task_tags.tag_id = tags.id" +
                 " WHERE task_id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, taskId);
             try (ResultSet rs = pstmt.executeQuery()) {
-                pstmt.setLong(1, taskId);
                 Set<Tag> tags = new HashSet<>();
                 while (rs.next()) {
                     tags.add(new Tag(rs.getString("tag")));

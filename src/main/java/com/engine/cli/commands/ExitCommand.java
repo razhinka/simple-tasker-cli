@@ -1,4 +1,4 @@
-package com.engine.commands;
+package com.engine.cli.commands;
 
 public class ExitCommand implements Command {
 

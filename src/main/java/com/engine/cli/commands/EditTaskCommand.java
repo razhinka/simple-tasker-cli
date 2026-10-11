@@ -1,8 +1,8 @@
-package com.engine.commands;
+package com.engine.cli.commands;
 
 import com.engine.exceptions.TaskNotFoundException;
 import com.engine.model.*;
-import com.engine.services.TaskRepository;
+import com.engine.repository.TaskRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

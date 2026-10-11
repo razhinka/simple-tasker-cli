@@ -1,4 +1,4 @@
-package com.engine.commands;
+package com.engine.cli.commands;
 
 import java.io.IOException;
 import java.nio.file.Files;

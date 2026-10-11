@@ -1,10 +1,10 @@
-package com.engine.commands;
+package com.engine.cli.commands;
 
 import com.engine.model.Priority;
 import com.engine.model.Status;
 import com.engine.model.Tag;
 import com.engine.model.Task;
-import com.engine.services.TaskRepository;
+import com.engine.repository.TaskRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;

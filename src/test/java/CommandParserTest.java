@@ -1,5 +1,5 @@
-import com.engine.commands.ParsedCommand;
-import com.engine.services.CommandParser;
+import com.engine.cli.commands.ParsedCommand;
+import com.engine.cli.CommandParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

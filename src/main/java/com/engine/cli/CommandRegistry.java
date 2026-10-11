@@ -1,6 +1,6 @@
-package com.engine.services;
+package com.engine.cli;
 
-import com.engine.commands.Command;
+import com.engine.cli.commands.Command;
 
 import java.util.HashMap;
 import java.util.Map;

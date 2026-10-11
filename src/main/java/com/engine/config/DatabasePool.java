@@ -1,4 +1,4 @@
-package com.engine.services;
+package com.engine.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;

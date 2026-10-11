@@ -1,7 +1,7 @@
-package com.engine.commands;
+package com.engine.cli.commands;
 
 import com.engine.exceptions.TaskNotFoundException;
-import com.engine.services.TaskRepository;
+import com.engine.repository.TaskRepository;
 
 public class DeleteTaskCommand implements Command {
     private final TaskRepository repository;

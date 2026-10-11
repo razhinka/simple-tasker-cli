@@ -1,4 +1,4 @@
-package com.engine.services;
+package com.engine.config;
 
 import org.flywaydb.core.Flyway;
 import javax.sql.DataSource;

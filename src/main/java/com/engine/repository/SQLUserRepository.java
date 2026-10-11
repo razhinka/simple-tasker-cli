@@ -1,4 +1,4 @@
-package com.engine.services;
+package com.engine.repository;
 
 import com.engine.model.User;
 
