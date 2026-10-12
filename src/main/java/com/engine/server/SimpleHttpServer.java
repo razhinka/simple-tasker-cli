@@ -70,23 +70,21 @@ public class SimpleHttpServer {
         if ("POST".equals(method) && "/tasks".equals(path)) {
             return handleCreateTask(request);
         }
-        if ("GET".equals(method) && path.startsWith("/tasks/")) {
-            try {
-                long id = Long.parseLong(path.substring("/tasks/".length()));
-                return handleGetTaskById(id);
-            } catch (NumberFormatException e) {
-                return HttpResponse.badRequest("Invalid ID format: " + path);
-            }
-        }
-        if ("DELETE".equals(method) && path.startsWith("/tasks/")) {
-            try {
-                long id = Long.parseLong(path.substring("/tasks/".length()));
-                return handleDeleteTask(id);
-            } catch (NumberFormatException e) {
-                return HttpResponse.badRequest("Invalid ID format: " + path);
-            }
-        }
 
+        if (path.startsWith("/tasks/")) {
+            try {
+                long id = Long.parseLong(path.substring("/tasks/".length()));
+
+                return switch (method) {
+                    case "GET" -> handleGetTaskById(id);
+                    case "PUT" -> handleUpdateTask(id, request);
+                    case "DELETE" -> handleDeleteTask(id);
+                    default -> HttpResponse.badRequest("Method not allowed");
+                };
+            } catch (NumberFormatException e) {
+                return HttpResponse.badRequest("Invalid ID format: " + path);
+            }
+        }
         return HttpResponse.notFound("Not Found");
     }
 
@@ -116,6 +114,9 @@ public class SimpleHttpServer {
     private HttpResponse handleCreateTask(HttpRequest request) {
         try {
             Task task = objectMapper.readValue(request.body(), Task.class);
+            if (task.getId() != 0) {
+                task = new Task.Builder(task).id(0).build();
+            }
             taskRepository.save(task);
             return HttpResponse.created("{\"status\": \"created\"}");
         } catch (JsonProcessingException e) {
@@ -131,6 +132,21 @@ public class SimpleHttpServer {
             return HttpResponse.ok("{\"status\": \"deleted\"}");
         } catch (Exception e) {
             return HttpResponse.internalServerError(e.getMessage());
+        }
+    }
+
+    private HttpResponse handleUpdateTask(long id, HttpRequest request) {
+        try {
+            Task updatedTask = objectMapper.readValue(request.body(), Task.class);
+            Task taskToSave = new Task.Builder(updatedTask).id(id).build();
+            taskRepository.save(taskToSave);
+            return HttpResponse.ok("{\"status\": \"updated\"}");
+        } catch (IllegalArgumentException e) {
+            return HttpResponse.notFound("Task not found");
+        } catch (JsonProcessingException e) {
+            return HttpResponse.badRequest("Invalid JSON");
+        } catch (Exception e) {
+            return HttpResponse.internalServerError("e.getMessage()");
         }
     }
 }

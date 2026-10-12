@@ -59,6 +59,7 @@ public class SQLTaskRepository implements TaskRepository {
                 SET title = ?,
                 description = ?,
                 status = ?,
+                priority = ?,
                 deadline = ?,
                 project_id = ?,
                 assignee_id = ?
@@ -81,7 +82,11 @@ public class SQLTaskRepository implements TaskRepository {
                     pstmt.setLong(6, o.getProject().id());
                     pstmt.setLong(7, o.getAssignee().id());
                     pstmt.setLong(8, o.getId());
-                    pstmt.executeUpdate();
+                    int rowsAffected = pstmt.executeUpdate();
+                    if (rowsAffected == 0) {
+                        conn.rollback();
+                        throw new IllegalArgumentException("Task with id " + o.getId() + " not found for update");
+                    }
                 } catch (SQLException e) {
                     conn.rollback();
                     throw new RuntimeException(e);
@@ -113,13 +118,13 @@ public class SQLTaskRepository implements TaskRepository {
 
     private Task insert(Task o) {
         String insertTaskSql = """
-            INSERT INTO tasks (title, description, status, priority, deadline, project_id, assignee_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-            """;
+                INSERT INTO tasks (title, description, status, priority, deadline, project_id, assignee_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                """;
         String insertTagSql = """
-            INSERT INTO task_tags (task_id, tag_id)
-            SELECT ?, id FROM tags WHERE tag = ?
-            """;
+                INSERT INTO task_tags (task_id, tag_id)
+                SELECT ?, id FROM tags WHERE tag = ?
+                """;
 
         try (Connection conn = dataSource.getConnection()) {
             conn.setAutoCommit(false);
