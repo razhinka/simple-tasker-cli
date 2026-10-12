@@ -130,6 +130,8 @@ public class SimpleHttpServer {
         try {
             taskRepository.deleteById(id);
             return HttpResponse.ok("{\"status\": \"deleted\"}");
+        } catch (IllegalArgumentException e) {
+            return HttpResponse.notFound("Task not found");
         } catch (Exception e) {
             return HttpResponse.internalServerError(e.getMessage());
         }
