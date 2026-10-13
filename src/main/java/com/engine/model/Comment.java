@@ -1,43 +1,56 @@
 package com.engine.model;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public record Comment(long id, User author, String text, LocalDateTime created) {
+@Entity
+@Table(name = "comments")
+public class Comment {
 
-    public Comment(long id, User author, String text,  LocalDateTime created) {
-        this.id = id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "author_id", nullable = false)
+    private User author;
+
+    @Column(name = "text", nullable = false)
+    private String text;
+
+    @Column(name = "created", nullable = false)
+    private LocalDateTime created;
+
+    @ManyToOne
+    @JoinColumn(name = "task_id")
+    private Task task;
+
+    public Comment() {
+    }
+
+    public Comment(User author, String text, LocalDateTime created) {
         this.author = Objects.requireNonNull(author, "author must not be null");
         this.text = Objects.requireNonNull(text, "text must not be null");
         this.created = Objects.requireNonNull(created, "created must not be null");
     }
 
-    @Override
-    public String toString() {
-        return "Comment{" + "id=" + id + ", author=" + author + ", text=" + text + '}';
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Comment(long id1, User author1, String text1, LocalDateTime created1))) {
-            return false;
-        }
-        if (this == o) {
-            return true;
-        }
-        return this.id == id1 && author.equals(author1) && text.equals(text1) && created.equals(created1);
-    }
+    public User getAuthor() { return author; }
+    public void setAuthor(User author) { this.author = author; }
 
-    @Override
-    public int hashCode() {
-        int result = 17;
-        result = 31 * result + Long.hashCode(id);
-        result = 31 * result + author.hashCode();
-        result = 31 * result + text.hashCode();
-        return result;
-    }
+    public String getText() { return text; }
+    public void setText(String text) { this.text = text; }
+
+    public LocalDateTime getCreated() { return created; }
+    public void setCreated(LocalDateTime created) { this.created = created; }
+
+    public Task getTask() { return task; }
+    public void setTask(Task task) { this.task = task; }
 
     public boolean isWrittenBy(User user) {
-        return user.equals(author);
+        return user != null && user.equals(author);
     }
 }

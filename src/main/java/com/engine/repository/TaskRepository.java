@@ -1,11 +1,16 @@
 package com.engine.repository;
 
+import com.engine.model.Status;
 import com.engine.model.Task;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import java.util.List;
 
-public interface TaskRepository extends CrudRepository<Task> {
-    void markDone(Task task);
-    Optional<Task> findByTitle(String title);
-    void deleteByTitle(String title);
+public interface TaskRepository extends JpaRepository<Task, Long> {
+
+    List<Task> findByStatus(Status status);
+
+    List<Task> findByProjectId(Long projectId);
+
+    List<Task> findByAssigneeIdAndStatus(Long assigneeId, Status status);
 }

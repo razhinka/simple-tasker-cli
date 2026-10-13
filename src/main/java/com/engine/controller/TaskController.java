@@ -1,9 +1,8 @@
 package com.engine.controller;
 
 import com.engine.model.Task;
-import com.engine.repository.SQLTaskRepository;
+import com.engine.repository.TaskRepository;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,9 +11,9 @@ import java.util.List;
 @RequestMapping("/tasks")
 public class TaskController {
 
-    private final SQLTaskRepository taskRepository;
+    private final TaskRepository taskRepository;
 
-    public TaskController(SQLTaskRepository taskRepository) {
+    public TaskController(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
     }
 
@@ -26,27 +25,30 @@ public class TaskController {
     @GetMapping("/{id}")
     public Task getTaskById(@PathVariable long id) {
         return taskRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Task with id " + id + " not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Task not found with id: " + id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Task createTask(@RequestBody Task task) {
-        if (task.getId() != 0) {
-            task = new Task.Builder(task).id(0).build();
-        }
         return taskRepository.save(task);
     }
 
     @PutMapping("/{id}")
     public Task updateTask(@PathVariable long id, @RequestBody Task task) {
-        Task taskToSave = new Task.Builder(task).id(id).build();
-        return taskRepository.save(taskToSave);
+        if (!taskRepository.existsById(id)) {
+            throw new IllegalArgumentException("Task not found with id: " + id);
+        }
+        task.setId(id);
+        return taskRepository.save(task);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTask(@PathVariable long id) {
+        if (!taskRepository.existsById(id)) {
+            throw new IllegalArgumentException("Task not found with id: " + id);
+        }
         taskRepository.deleteById(id);
     }
 }
