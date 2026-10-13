@@ -219,16 +219,23 @@ public class SQLTaskRepository implements TaskRepository {
     @Override
     public void deleteById(long id) {
         String sql = "DELETE FROM tasks WHERE id = ?";
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setLong(1, id);
-            int rowsAffected = pstmt.executeUpdate();
-            if (rowsAffected == 0) {
-                conn.rollback();
-                throw new IllegalArgumentException("Task with id " + id + " not found for deletion");
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false);
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+                pstmt.setLong(1, id);
+                int rowsAffected = pstmt.executeUpdate();
+                if (rowsAffected == 0) {
+                    conn.rollback();
+                    throw new IllegalArgumentException("Task with id " + id + " not found for deletion");
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException("Error by deleting task", e);
+            } finally {
+                conn.setAutoCommit(true);
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error by deleting task", e);
+            throw new RuntimeException(e);
         }
     }
 

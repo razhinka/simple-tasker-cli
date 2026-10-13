@@ -24,10 +24,9 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable long id) {
+    public Task getTaskById(@PathVariable long id) {
         return taskRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElseThrow(() -> new IllegalArgumentException("Task with id " + id + " not found"));
     }
 
     @PostMapping
@@ -40,20 +39,14 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateTask(@PathVariable long id, @RequestBody Task task) {
-        try {
-            Task taskToSave = new Task.Builder(task).id(id).build();
-            Task updated = taskRepository.save(taskToSave);
-            return ResponseEntity.ok(updated);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("{\"error\": \"Task not found\"}");
-        }
+    public Task updateTask(@PathVariable long id, @RequestBody Task task) {
+        Task taskToSave = new Task.Builder(task).id(id).build();
+        return taskRepository.save(taskToSave);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteTask(@PathVariable long id) {
         taskRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
     }
 }
