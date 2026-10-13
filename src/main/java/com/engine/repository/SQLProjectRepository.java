@@ -1,6 +1,8 @@
 package com.engine.repository;
 
 import com.engine.model.Project;
+import org.springframework.stereotype.Repository;
+
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -8,7 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class SQLProjectRepository implements Repository<Project> {
+@Repository
+public class SQLProjectRepository implements CrudRepository<Project> {
     private final DataSource dataSource;
 
     public SQLProjectRepository(DataSource dataSource) {

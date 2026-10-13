@@ -1,6 +1,7 @@
 package com.engine.repository;
 
 import com.engine.model.User;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -8,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class SQLUserRepository implements Repository<User> {
+@Repository
+public class SQLUserRepository implements CrudRepository<User> {
     private final DataSource dataSource;
 
     public SQLUserRepository(DataSource dataSource) {

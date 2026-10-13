@@ -1,12 +1,14 @@
 package com.engine.repository;
 
 import com.engine.model.*;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
+@Repository
 public class SQLTaskRepository implements TaskRepository {
     private final DataSource dataSource;
 
