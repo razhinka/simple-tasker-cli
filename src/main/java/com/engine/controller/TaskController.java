@@ -1,7 +1,10 @@
 package com.engine.controller;
 
+import com.engine.dto.TaskRequestDto;
+import com.engine.model.Comment;
 import com.engine.model.Task;
-import com.engine.repository.TaskRepository;
+import com.engine.repository.CommentRepository;
+import com.engine.service.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,44 +14,43 @@ import java.util.List;
 @RequestMapping("/tasks")
 public class TaskController {
 
-    private final TaskRepository taskRepository;
+    private final TaskService taskService;
+    private final CommentRepository commentRepository;
 
-    public TaskController(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
+    public TaskController(TaskService taskService, CommentRepository commentRepository) {
+        this.taskService = taskService;
+        this.commentRepository = commentRepository;
     }
 
     @GetMapping
     public List<Task> getAllTasks() {
-        return taskRepository.findAll();
+        return taskService.getAllTasks();
     }
 
     @GetMapping("/{id}")
-    public Task getTaskById(@PathVariable long id) {
-        return taskRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Task not found with id: " + id));
+    public Task getTaskById(@PathVariable Long id) {
+        return taskService.getTaskById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Task createTask(@RequestBody Task task) {
-        return taskRepository.save(task);
+    public Task createTask(@RequestBody TaskRequestDto dto) {
+        return taskService.createTaskFromDto(dto);
     }
 
     @PutMapping("/{id}")
-    public Task updateTask(@PathVariable long id, @RequestBody Task task) {
-        if (!taskRepository.existsById(id)) {
-            throw new IllegalArgumentException("Task not found with id: " + id);
-        }
-        task.setId(id);
-        return taskRepository.save(task);
+    public Task updateTask(@PathVariable Long id, @RequestBody TaskRequestDto dto) {
+        return taskService.updateTaskFromDto(id, dto);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTask(@PathVariable long id) {
-        if (!taskRepository.existsById(id)) {
-            throw new IllegalArgumentException("Task not found with id: " + id);
-        }
-        taskRepository.deleteById(id);
+    public void deleteTask(@PathVariable Long id) {
+        taskService.deleteTask(id);
+    }
+
+    @GetMapping("/{id}/comments")
+    public List<Comment> getTaskComments(@PathVariable Long id) {
+        return commentRepository.findByTaskId(id);
     }
 }
